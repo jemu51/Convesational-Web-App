@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
   margin: 0;
 }
 
@@ -7,31 +8,54 @@ html {
 }
 
 body {
-  height: inherit;
-  overflow: hidden;
-}
-
-h1, p {
-  font-family: sans-serif;
-  text-align: center;
-  padding: 20px;
-}
-
-div {
-/*  height: 100px;
+  padding: 2%;
+  font-family: monospace;
+  color: #086775;
   overflow: auto;
-  position: absolute;
-  bottom: 0px;*/
-  /*right: 10;*/
-  /*left: 10;*/
-  margin: 20px;
-  background-color: rgba(255,255,255,0.2);
 }
 
-ul {
-  margin: 0;
+h1 {
+  text-align: center;
+  width: 100%;
+  padding-bottom: 5%;
+}
+p {
+  text-align: center;
+  width: 100%;
+  padding-top: 2%;
+  padding-bottom: 20px;
+}
+h4 {
+  margin-top: 1%;
+}
+select {
+  font-family: monospace;
+  font-size: 13px;
+  border: 1px solid #086775;
+}
+
+form {
+  width: 100%;
+}
+.range {
+  margin-top: 2%;
+}
+.clearfix {
+  overflow: auto;
 }
 
 .hints span {
-  text-shadow: 0px 0px 6px rgba(255,255,255,0.7);
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.7);
+}
+.select {
+  padding: 0;
+  margin: 0;
+  border: 5px solid #086775;
+  border-radius: 5px;
+}
+.space {
+  margin: 10%;
+}
+.btn-info {
+  margin: 5px;
 }
