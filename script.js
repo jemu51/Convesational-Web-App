@@ -237,9 +237,9 @@ if (hiddenProperty === null || visibilityStateProperty === null) {
   var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
   function onVisibilityChange() {
      if (!document[hiddenProperty]) {
+       recognition.start();
+    }else{
       recognition.stop();
-     }else{
-      recognition.start();
      }
 
   }
