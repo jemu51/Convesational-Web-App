@@ -1,15 +1,11 @@
 {
-  "name": "SpeechRec",
-  "description": "Web Speech API  speech recognition demo",
+  "name": "VC-W-App",
+  "description": "Web Speech API  speech recognition driven app",
   "type": "privileged",
   "launch_path": "/index.html",
-  "icons": {
-    "512": "/img/ws512.png",
-    "128": "/img/ws128.png"
-  },
   "developer": {
-    "name": "Chris Mills",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API"
+    "name": "Al Mansur Siddiqui",
+    "url": "https://github.com/jemu51/jemu51"
   },
   "default_locale": "en",
   "permissions": {

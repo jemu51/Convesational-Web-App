@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="blue-mic.jpg" type="image/jpg">
 
-    <title>Voice Driven WebApp</title>
     <!-- Latest compiled and minified CSS -->
     <link
       rel="stylesheet"
@@ -24,11 +24,14 @@
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <title> Voice Driven WebApp </title>
   </head>
 
   <body>
     <button id="start" class="btn btn-info">Click to Start Speaking</button>
     <h1>Say a Word & Get Definition</h1>
+      <span id="pv-unsupported" hidden>Visibility API not supported</span>
+      <p class="input text-center"></p>
     <div class="row select ">
       <p class="output text-center">
         Say a Word, answer will be here

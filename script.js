@@ -64,7 +64,7 @@ recognition.lang = "en-US";
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-var diagnostic = document.querySelector(".output");
+var diagnostic = document.querySelector(".input");
 var bg = document.querySelector("html");
 var hints = document.querySelector(".hints");
 var stt = document.getElementById("start");
@@ -90,20 +90,20 @@ colors.forEach(function(v, i, a) {
 stt.onclick = function() {
   event.preventDefault();
   recognition.start();
-  console.log("Ready to receive a color command.");
+  console.log("Ready to receive a command.");
 };
 
 recognition.onresult = function(event) {
   var last = event.results.length - 1;
-  var color = event.results[last][0].transcript;
-  diagnostic.textContent = "Result received: " + color + ".";
-  bg.style.backgroundColor = color;
+  var speech = event.results[last][0].transcript;
+  diagnostic.textContent = "Received Audio Input : '" + speech + "'.";  
+  bg.style.backgroundColor = speech;
   console.log("Confidence: " + event.results[0][0].confidence);
 
   $.ajax({
     url:
       "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
-      color +
+      speech +
       "&utf8=&format=json",
     type: "GET",
     crossDomain: true,
@@ -123,7 +123,10 @@ recognition.onresult = function(event) {
     }
   });
 };
-
+recognition.onaudiostart = function() {
+  diagnostic.textContent = "Ready to receive audio";  
+  console.log('Audio capturing started');
+}
 recognition.onspeechend = function() {
   recognition.stop();
 };
@@ -144,8 +147,6 @@ function populateVoiceList() {
     else if (aname == bname) return 0;
     else return +1;
   });
-  // var selectedIndex;
-  // voiceSelect.selectedIndex < 0 ? 0 : voiceSelect.selectedIndex;
   voiceSelect.innerHTML = "";
   for (i = 0; i < voices.length; i++) {
     var option = document.createElement("option");
@@ -156,11 +157,13 @@ function populateVoiceList() {
 
     if (voices[i].default) {
       option.textContent += " -- DEFAULT";
+    }
+    if (voices[i].lang==='en-US') {
       option.setAttribute("selected", "");
     }
+
     voiceSelect.appendChild(option);
   }
-  // voiceSelect.selectedIndex = selectedIndex;
 }
 
 populateVoiceList();
@@ -216,3 +219,31 @@ rate.onchange = function() {
 voiceSelect.onchange = function() {
   speak();
 };
+
+// Page visibilitychange
+
+var hiddenProperty = 'hidden' in document ? 'hidden' :
+                    'webkitHidden' in document ? 'webkitHidden' :
+                    'mozHidden' in document ? 'mozHidden' :
+                    null;
+var visibilityStateProperty = 'visibilityState' in document ? 'visibilityState' :
+                             'webkitVisibilityState' in document ? 'webkitVisibilityState' :
+                             'mozVisibilityState' in document ? 'mozVisibilityState' :
+                             null;
+
+if (hiddenProperty === null || visibilityStateProperty === null) {
+  document.getElementById('pv-unsupported').removeAttribute('hidden');
+} else {
+  var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+  function onVisibilityChange() {
+     if (!document[hiddenProperty]) {
+      recognition.stop();
+     }else{
+      recognition.start();
+     }
+
+  }
+  document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+
+}
+onVisibilityChange();
