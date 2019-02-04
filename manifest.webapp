@@ -1,0 +1,19 @@
+{
+  "name": "VC-W-App",
+  "description": "Web Speech API  speech recognition driven app",
+  "type": "privileged",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "Al Mansur Siddiqui",
+    "url": "https://github.com/jemu51/jemu51"
+  },
+  "default_locale": "en",
+  "permissions": {
+    "audio-capture" : {
+      "description" : "Audio capture"
+    },
+    "speech-recognition" : {
+      "description" : "Speech recognition"
+    }
+  }
+}
