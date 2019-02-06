@@ -65,7 +65,7 @@ recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
 var diagnostic = document.querySelector(".input");
-var bg = document.querySelector("html");
+var bg = document.querySelector("body");
 var hints = document.querySelector(".hints");
 var stt = document.getElementById("start");
 
@@ -78,16 +78,21 @@ var pitchValue = document.querySelector(".pitch-value");
 var rate = document.querySelector("#rate");
 var rateValue = document.querySelector(".rate-value");
 var voices = [];
-var str;
-var newStr;
-var newStr2;
+var speech = "";
+var status = "";
+var item = "";
 var colorHTML = "";
-
+var country = "";
+var lat = "";
+var lon = "";
+var d = new Date();
+var d_time = "";
+var ln = navigator.language;
+var online = navigator.onLine;
+console.log(online);
 colors.forEach(function(v, i, a) {
   colorHTML += '<span style="background-color:' + v + ';"> ' + v + " </span>";
 });
-
-
 
 stt.onclick = function() {
   event.preventDefault();
@@ -95,12 +100,12 @@ stt.onclick = function() {
   console.log("Ready to receive a command.");
 };
 
-
 recognition.onresult = function(event) {
   var last = event.results.length - 1;
-  var speech = event.results[last][0].transcript;
-  diagnostic.textContent = "Received Audio Input : '" + speech + "'.";  
+  speech = event.results[last][0].transcript;
+  diagnostic.textContent = "Received Audio Input : '" + speech + "'.";
   bg.style.backgroundColor = speech;
+  console.log("Confidence: " + event.results[0][0].confidence);
   userInfo();
 
   // var urltts2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + speech + "&utf8=&format=json" ;
@@ -131,40 +136,61 @@ recognition.onresult = function(event) {
   // });
 };
 
-function userInfo (){
- var userUrl="http://geoip-db.com/json/";
- // var userUrl="http://gd.geobytes.com/GetCityDetails";
- // var country = "";
- // var lat = "";
- // var lon = "";
+function userInfo() {
+  var userUrl = "http://geoip-db.com/json/";
+  // var userUrl="http://gd.geobytes.com/GetCityDetails";
+
   fetch(userUrl)
     .then(function(response) {
       return response.json();
     })
-  .then(function(myJson) {
-    var country = myJson.country_name;
-    var lat = myJson.latitude;
-    var lon = myJson.longitude;
-    console.log(lat);
-    var d = new Date();
-    var d_time = d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate()+"/"+d.getHours()+"/"+d.getMinutes() ; 
-    console.log("Confidence: " + event.results[0][0].confidence);
-    var urlttsx = "http://178.128.144.197:8000/willy/?content=" + speech + "&country=bd&d_time=" + d_time + "&item=6&lat=" + lat + "&ln=en&lon=" + lon + "&status=202&timezone=6&device_id=SHOHAN-PC";
-    fetch(urlttsx)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(myJson) {
-        $(".output").html(myJson.text);
-        console.log(JSON.stringify(myJson.text));
-      });
-
-  });
+    .then(function(myJson) {
+      country = myJson.country_code.toLowerCase();
+      lat = myJson.latitude;
+      lon = myJson.longitude;
+      d_time =
+        d.getFullYear() +
+        "/" +
+        d.getMonth() +
+        "/" +
+        d.getDate() +
+        "/" +
+        d.getHours() +
+        "/" +
+        d.getMinutes();
+      var urlttsx =
+        "http://178.128.144.197:8000/willy/?content=" +
+        speech +
+        "&country=" +
+        country +
+        "&d_time=" +
+        d_time +
+        "&item=" +
+        item +
+        "&lat=" +
+        lat +
+        "&ln=en&lon=" +
+        lon +
+        "&status=" +
+        status +
+        "&timezone=6&device_id=SHOHAN-PC";
+      fetch(urlttsx)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myJson) {
+          $(".output").html(myJson.text);
+          speak();
+          item = myJson.item;
+          status = myJson.status;
+          inputTxt.blur();
+        });
+    });
 }
 recognition.onaudiostart = function() {
-  diagnostic.textContent = "Ready to receive audio";  
-  console.log('Audio capturing started');
-}
+  diagnostic.textContent = "Ready to receive audio";
+  console.log("Audio capturing started");
+};
 recognition.onspeechend = function() {
   recognition.stop();
 };
@@ -196,7 +222,7 @@ function populateVoiceList() {
     if (voices[i].default) {
       option.textContent += " -- DEFAULT";
     }
-    if (voices[i].lang==='en-US') {
+    if (voices[i].lang === "en-US") {
       option.setAttribute("selected", "");
     }
 
@@ -260,28 +286,37 @@ voiceSelect.onchange = function() {
 
 // Page visibilitychange
 
-var hiddenProperty = 'hidden' in document ? 'hidden' :
-                    'webkitHidden' in document ? 'webkitHidden' :
-                    'mozHidden' in document ? 'mozHidden' :
-                    null;
-var visibilityStateProperty = 'visibilityState' in document ? 'visibilityState' :
-                             'webkitVisibilityState' in document ? 'webkitVisibilityState' :
-                             'mozVisibilityState' in document ? 'mozVisibilityState' :
-                             null;
+var hiddenProperty =
+  "hidden" in document
+    ? "hidden"
+    : "webkitHidden" in document
+    ? "webkitHidden"
+    : "mozHidden" in document
+    ? "mozHidden"
+    : null;
+var visibilityStateProperty =
+  "visibilityState" in document
+    ? "visibilityState"
+    : "webkitVisibilityState" in document
+    ? "webkitVisibilityState"
+    : "mozVisibilityState" in document
+    ? "mozVisibilityState"
+    : null;
 
 if (hiddenProperty === null || visibilityStateProperty === null) {
-  document.getElementById('pv-unsupported').removeAttribute('hidden');
+  document.getElementById("pv-unsupported").removeAttribute("hidden");
 } else {
-  var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+  var visibilityChangeEvent = hiddenProperty.replace(
+    /hidden/i,
+    "visibilitychange"
+  );
   function onVisibilityChange() {
-     if (!document[hiddenProperty]) {
+    if (!document[hiddenProperty]) {
       recognition.start();
-     }else{
+    } else {
       recognition.stop();
-     }
-
+    }
   }
   document.addEventListener(visibilityChangeEvent, onVisibilityChange);
-
 }
 onVisibilityChange();
