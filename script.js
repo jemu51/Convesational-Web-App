@@ -87,42 +87,80 @@ colors.forEach(function(v, i, a) {
   colorHTML += '<span style="background-color:' + v + ';"> ' + v + " </span>";
 });
 
+
+
 stt.onclick = function() {
   event.preventDefault();
   recognition.start();
   console.log("Ready to receive a command.");
 };
 
+
 recognition.onresult = function(event) {
   var last = event.results.length - 1;
   var speech = event.results[last][0].transcript;
   diagnostic.textContent = "Received Audio Input : '" + speech + "'.";  
   bg.style.backgroundColor = speech;
-  console.log("Confidence: " + event.results[0][0].confidence);
+  userInfo();
 
-  $.ajax({
-    url:
-      "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
-      speech +
-      "&utf8=&format=json",
-    type: "GET",
-    crossDomain: true,
-    dataType: "jsonp",
-    headers: {
-      Accept: "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "content-type": "application/json"
-    },
-    success: function(data) {
-      $(".output").html(data.query.search[0].snippet + ",,,");
-      console.log(inputTxt.textContent);
+  // var urltts2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + speech + "&utf8=&format=json" ;
 
-      speak();
+  // $.ajax({
+  //   url: urltts2 ,
+  //   type: "GET",
+  //   crossDomain: true,
+  //   // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+  //   dataType: "json",
+  //   // jsonp: false,
+  //   headers: {
+  //     Accept: "application/json",
+  //     "Access-Control-Allow-Origin": "*",
+  //     "content-type": "application/json"
+  //   },
+  //   success: function(json) {
+  //     var obj = JSON.parse(json);
+  //     // $(".output").html(data.query.search[0].snippet + ",,,");
+  //     // $(".output").html(data.text);
+  //     console.log(obj.text);
+  //     // console.log(inputTxt.textContent);
 
-      inputTxt.blur();
-    }
-  });
+  //     // speak();
+
+  //     // inputTxt.blur();
+  //   }
+  // });
 };
+
+function userInfo (){
+ var userUrl="http://geoip-db.com/json/";
+ // var userUrl="http://gd.geobytes.com/GetCityDetails";
+ // var country = "";
+ // var lat = "";
+ // var lon = "";
+  fetch(userUrl)
+    .then(function(response) {
+      return response.json();
+    })
+  .then(function(myJson) {
+    var country = myJson.country_name;
+    var lat = myJson.latitude;
+    var lon = myJson.longitude;
+    console.log(lat);
+    var d = new Date();
+    var d_time = d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate()+"/"+d.getHours()+"/"+d.getMinutes() ; 
+    console.log("Confidence: " + event.results[0][0].confidence);
+    var urlttsx = "http://178.128.144.197:8000/willy/?content=" + speech + "&country=bd&d_time=" + d_time + "&item=6&lat=" + lat + "&ln=en&lon=" + lon + "&status=202&timezone=6&device_id=SHOHAN-PC";
+    fetch(urlttsx)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        $(".output").html(myJson.text);
+        console.log(JSON.stringify(myJson.text));
+      });
+
+  });
+}
 recognition.onaudiostart = function() {
   diagnostic.textContent = "Ready to receive audio";  
   console.log('Audio capturing started');
@@ -237,9 +275,9 @@ if (hiddenProperty === null || visibilityStateProperty === null) {
   var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
   function onVisibilityChange() {
      if (!document[hiddenProperty]) {
-      recognition.stop();
-     }else{
       recognition.start();
+     }else{
+      recognition.stop();
      }
 
   }
