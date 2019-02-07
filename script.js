@@ -96,6 +96,7 @@ colors.forEach(function(v, i, a) {
 
 stt.onclick = function() {
   event.preventDefault();
+  synth.cancel();
   recognition.start();
   console.log("Ready to receive a command.");
 };
@@ -266,6 +267,7 @@ function speak() {
 
 inputForm.onsubmit = function(event) {
   event.preventDefault();
+  synth.cancel();
 
   speak();
 
