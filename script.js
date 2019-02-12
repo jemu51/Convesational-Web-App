@@ -181,11 +181,37 @@ function userInfo() {
           return response.json();
         })
         .then(function(myJson) {
-          handleResponse(myJson);
-          speak();
-          item = myJson.item;
-          status = myJson.status;
-          inputTxt.blur();
+          var serachOption = speech.match(/define |play YouTube/g);
+          console.log(serachOption);
+          if (serachOption == "play YouTube") {
+            var q = speech.replace(serachOption, "");
+            var utubeUrl =
+              "https://www.googleapis.com/youtube/v3/search?part=id,snippet&type=video&q=" +
+              q +
+              "&key=AIzaSyCwW7ir6ShfUu4gFOo5fZa_bCprsSwWoCY";
+
+            fetch(utubeUrl)
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(myJson) {
+                console.log(myJson.items);
+                recognition.stop();
+                var str = myJson.items[0].id.videoId;
+                var videoUrl =
+                  "<iframe width='420' height='315' src='https://www.youtube.com/embed/" +
+                  str +
+                  "?autoplay=1&mute=1&enablejsapi=1'></iframe>";
+                $(".output").html(videoUrl);
+                // recognition.start();
+              });
+          } else {
+            handleResponse(myJson);
+            speak();
+            item = myJson.item;
+            status = myJson.status;
+            inputTxt.blur();
+          }
         });
     });
 }
