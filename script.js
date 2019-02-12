@@ -97,6 +97,7 @@ colors.forEach(function(v, i, a) {
 stt.onclick = function() {
   event.preventDefault();
   synth.cancel();
+  console.error("SpeechSynthesisUtterance stoped");
   recognition.start();
   console.log("Ready to receive a command.");
 };
@@ -180,7 +181,7 @@ function userInfo() {
           return response.json();
         })
         .then(function(myJson) {
-          $(".output").html(myJson.text);
+          handleResponse(myJson);
           speak();
           item = myJson.item;
           status = myJson.status;
@@ -188,6 +189,29 @@ function userInfo() {
         });
     });
 }
+
+function handleResponse(myJson) {
+  console.log(myJson.item);
+  console.log(myJson.status);
+  console.log(myJson.text);
+
+  switch (myJson.item | myJson.item) {
+    case 0 | 0:
+      $(".output").html(
+        "I don't know the answer, please try a different question."
+      );
+      break;
+    case 5 | 0:
+      $(".output").html(
+        "<iframe src=" + myJson.details + " height='200' width='300'></iframe>"
+      );
+      break;
+    default:
+      $(".output").html(myJson.text);
+      break;
+  }
+}
+
 recognition.onaudiostart = function() {
   diagnostic.textContent = "Ready to receive audio";
   console.log("Audio capturing started");
@@ -268,10 +292,9 @@ function speak() {
 inputForm.onsubmit = function(event) {
   event.preventDefault();
   synth.cancel();
-
   speak();
-
   inputTxt.blur();
+  console.error("SpeechSynthesisUtterance restarted");
 };
 
 pitch.onchange = function() {
