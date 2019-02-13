@@ -108,34 +108,62 @@ recognition.onresult = function(event) {
   diagnostic.textContent = "Received Audio Input : '" + speech + "'.";
   bg.style.backgroundColor = speech;
   console.log("Confidence: " + event.results[0][0].confidence);
-  userInfo();
+  // userInfo();
+  var serachOption = speech.match(/define |YouTube/g);
+  // console.log(serachOption);
+  if (serachOption == "YouTube") {
+    var q = speech.replace(serachOption, "");
+    var utubeUrl =
+      "https://www.googleapis.com/youtube/v3/search?part=id,snippet&type=video&q=" +
+      q +
+      "&key=AIzaSyCwW7ir6ShfUu4gFOo5fZa_bCprsSwWoCY";
 
-  // var urltts2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + speech + "&utf8=&format=json" ;
+    fetch(utubeUrl)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson.items);
+        recognition.stop();
+        var str = myJson.items[0].id.videoId;
+        var videoUrl =
+          "<iframe width='420' height='315' src='https://www.youtube.com/embed/" +
+          str +
+          "?autoplay=1&mute=1&enablejsapi=1'></iframe>";
+        $(".output").html(videoUrl);
+        // recognition.start();
+      });
+  } else {
+    var urltts2 =
+      "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
+      speech +
+      "&utf8=&format=json";
 
-  // $.ajax({
-  //   url: urltts2 ,
-  //   type: "GET",
-  //   crossDomain: true,
-  //   // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-  //   dataType: "json",
-  //   // jsonp: false,
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Access-Control-Allow-Origin": "*",
-  //     "content-type": "application/json"
-  //   },
-  //   success: function(json) {
-  //     var obj = JSON.parse(json);
-  //     // $(".output").html(data.query.search[0].snippet + ",,,");
-  //     // $(".output").html(data.text);
-  //     console.log(obj.text);
-  //     // console.log(inputTxt.textContent);
+    $.ajax({
+      url: urltts2,
+      type: "GET",
+      crossDomain: true,
+      // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+      dataType: "jsonp",
+      // jsonp: false,
+      headers: {
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "content-type": "application/json"
+      },
+      success: function(json) {
+        // var obj = JSON.parse(json);
+        $(".output").html(json.query.search[0].snippet + ",,,");
+        // $(".output").html(data.text);
+        console.log(json.query.search[0].snippet);
+        // console.log(inputTxt.textContent);
 
-  //     // speak();
+        speak();
 
-  //     // inputTxt.blur();
-  //   }
-  // });
+        inputTxt.blur();
+      }
+    });
+  }
 };
 
 function userInfo() {
@@ -181,37 +209,11 @@ function userInfo() {
           return response.json();
         })
         .then(function(myJson) {
-          var serachOption = speech.match(/define |play YouTube/g);
-          console.log(serachOption);
-          if (serachOption == "play YouTube") {
-            var q = speech.replace(serachOption, "");
-            var utubeUrl =
-              "https://www.googleapis.com/youtube/v3/search?part=id,snippet&type=video&q=" +
-              q +
-              "&key=AIzaSyCwW7ir6ShfUu4gFOo5fZa_bCprsSwWoCY";
-
-            fetch(utubeUrl)
-              .then(function(response) {
-                return response.json();
-              })
-              .then(function(myJson) {
-                console.log(myJson.items);
-                recognition.stop();
-                var str = myJson.items[0].id.videoId;
-                var videoUrl =
-                  "<iframe width='420' height='315' src='https://www.youtube.com/embed/" +
-                  str +
-                  "?autoplay=1&mute=1&enablejsapi=1'></iframe>";
-                $(".output").html(videoUrl);
-                // recognition.start();
-              });
-          } else {
-            handleResponse(myJson);
-            speak();
-            item = myJson.item;
-            status = myJson.status;
-            inputTxt.blur();
-          }
+          //   handleResponse(myJson);
+          //   speak();
+          //   item = myJson.item;
+          //   status = myJson.status;
+          //   inputTxt.blur();
         });
     });
 }
