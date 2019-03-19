@@ -111,21 +111,25 @@ recognition.onresult = function(event) {
   console.log("Confidence: " + event.results[0][0].confidence);
   var serachOption = speech.match(/define|YouTube|movie/g);
   speech = speech.replace(serachOption, "");
-  console.log(serachOption[0]);
-  switch (serachOption[0]) {
-    case "YouTube":
-      youtb(speech);
-      break;
-    case "define":
-      wk(speech);
-      break;
-    case "movie":
-      mv(speech);
-      break;
-    default:
-      wk(speech);
-      // userInfo();
-      break;
+  if (serachOption.length > 0) {
+    console.log(serachOption[0]);
+    switch (serachOption[0]) {
+      case "YouTube":
+        youtb(speech);
+        break;
+      case "define":
+        wk(speech);
+        break;
+      case "movie":
+        mv(speech);
+        break;
+      default:
+        wk(speech);
+        // userInfo();
+        break;
+    }
+  } else {
+    wk(speech);
   }
 };
 
