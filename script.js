@@ -96,37 +96,58 @@ stt.onclick = function() {
 recognition.onresult = function(event) {
   var last = event.results.length - 1;
   var speech = event.results[last][0].transcript;
-  diagnostic.textContent = "Received Audio Input : '" + speech + "'.";  
+  diagnostic.textContent = "Received Audio Input : '" + speech + "'.";
   bg.style.backgroundColor = speech;
   console.log("Confidence: " + event.results[0][0].confidence);
+  if (findWord("movie", speech)) {
+    var ret = speech.replace("movie", "");
+    theMovieDb.search.getMulti({ query: ret }, successCB, errorCB);
 
-  $.ajax({
-    url:
-      "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
-      speech +
-      "&utf8=&format=json",
-    type: "GET",
-    crossDomain: true,
-    dataType: "jsonp",
-    headers: {
-      Accept: "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "content-type": "application/json"
-    },
-    success: function(data) {
-      $(".output").html(data.query.search[0].snippet + ",,,");
-      console.log(inputTxt.textContent);
+    function successCB(data) {
+      var obj = JSON.parse(data);
+      var movie = new Oscar(obj.results[0]);
+      movie.show();
 
-      speak();
-
-      inputTxt.blur();
+      // $(".output").html(
+      //   "<img src='" +
+      //     theMovieDb.common.images_uri +
+      //     "w500/" +
+      //     obj.results[0].poster_path +
+      //     "' >"
+      // );
     }
-  });
+    function errorCB(data) {
+      console.log("Error callback: " + data);
+    }
+  } else {
+    $.ajax({
+      url:
+        "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
+        speech +
+        "&utf8=&format=json",
+      type: "GET",
+      crossDomain: true,
+      dataType: "jsonp",
+      headers: {
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "content-type": "application/json"
+      },
+      success: function(data) {
+        $(".output").html(data.query.search[0].snippet + ",,,");
+        console.log(inputTxt.textContent);
+
+        speak();
+
+        inputTxt.blur();
+      }
+    });
+  }
 };
 recognition.onaudiostart = function() {
-  diagnostic.textContent = "Ready to receive audio";  
-  console.log('Audio capturing started');
-}
+  diagnostic.textContent = "Ready to receive audio";
+  console.log("Audio capturing started");
+};
 recognition.onspeechend = function() {
   recognition.stop();
 };
@@ -158,7 +179,7 @@ function populateVoiceList() {
     if (voices[i].default) {
       option.textContent += " -- DEFAULT";
     }
-    if (voices[i].lang==='en-US') {
+    if (voices[i].lang === "en-US") {
       option.setAttribute("selected", "");
     }
 
@@ -222,28 +243,77 @@ voiceSelect.onchange = function() {
 
 // Page visibilitychange
 
-var hiddenProperty = 'hidden' in document ? 'hidden' :
-                    'webkitHidden' in document ? 'webkitHidden' :
-                    'mozHidden' in document ? 'mozHidden' :
-                    null;
-var visibilityStateProperty = 'visibilityState' in document ? 'visibilityState' :
-                             'webkitVisibilityState' in document ? 'webkitVisibilityState' :
-                             'mozVisibilityState' in document ? 'mozVisibilityState' :
-                             null;
+var hiddenProperty =
+  "hidden" in document
+    ? "hidden"
+    : "webkitHidden" in document
+    ? "webkitHidden"
+    : "mozHidden" in document
+    ? "mozHidden"
+    : null;
+var visibilityStateProperty =
+  "visibilityState" in document
+    ? "visibilityState"
+    : "webkitVisibilityState" in document
+    ? "webkitVisibilityState"
+    : "mozVisibilityState" in document
+    ? "mozVisibilityState"
+    : null;
 
 if (hiddenProperty === null || visibilityStateProperty === null) {
-  document.getElementById('pv-unsupported').removeAttribute('hidden');
+  document.getElementById("pv-unsupported").removeAttribute("hidden");
 } else {
-  var visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+  var visibilityChangeEvent = hiddenProperty.replace(
+    /hidden/i,
+    "visibilitychange"
+  );
   function onVisibilityChange() {
-     if (!document[hiddenProperty]) {
-       recognition.start();
-    }else{
+    if (!document[hiddenProperty]) {
+      recognition.start();
+    } else {
       recognition.stop();
-     }
-
+    }
   }
   document.addEventListener(visibilityChangeEvent, onVisibilityChange);
-
 }
 onVisibilityChange();
+
+function findWord(word, str) {
+  return str.split(" ").some(function(w) {
+    return w === word;
+  });
+}
+
+class Oscar {
+  constructor(data) {
+    console.log(data);
+    this.poster = data.poster_path;
+    this.snipp = data.overview;
+    this.rating = data.vote_average;
+    this.poularity = data.popularity;
+    this.first_air_date = data.first_air_date;
+  }
+  show() {
+    var p = document.createElement("p");
+    p.innerHTML = this.snipp;
+    var img = document.createElement("img");
+    img.src = theMovieDb.common.images_uri + "w200/" + this.poster;
+
+    var container = document.createElement("div");
+    container.id = "wrapper";
+
+    $("#oscar").append(container);
+    $("#wrapper").append(p);
+    $("#wrapper").append(img);
+
+    // var html = '<div><ul>';
+
+    // for(var i=1; i<=40; i++){
+    //     html+= "<li>Testing: "+i+"</li>";
+    // }
+
+    // html+= '</ul></div>';
+
+    // $('#wrapper').append(html);
+  }
+}
