@@ -111,7 +111,7 @@ recognition.onresult = function(event) {
   console.log("Confidence: " + event.results[0][0].confidence);
   var serachOption = speech.match(/define|YouTube|movie/g);
   speech = speech.replace(serachOption, "");
-  if (serachOption.length > 0) {
+  if (serachOption) {
     console.log(serachOption[0]);
     switch (serachOption[0]) {
       case "YouTube":
