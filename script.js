@@ -81,8 +81,18 @@ var voices = [];
 var str;
 var newStr;
 var newStr2;
+var speech = "";
+var status = "";
+var item = "";
 var colorHTML = "";
-
+var country = "";
+var lat = "";
+var lon = "";
+var d = new Date();
+var d_time = "";
+var ln = navigator.language;
+var online = navigator.onLine;
+console.log(online);
 colors.forEach(function(v, i, a) {
   colorHTML += '<span style="background-color:' + v + ';"> ' + v + " </span>";
 });
@@ -99,51 +109,26 @@ recognition.onresult = function(event) {
   diagnostic.textContent = "Received Audio Input : '" + speech + "'.";
   bg.style.backgroundColor = speech;
   console.log("Confidence: " + event.results[0][0].confidence);
-  if (findWord("movie", speech)) {
-    var ret = speech.replace("movie", "");
-    theMovieDb.search.getMulti({ query: ret }, successCB, errorCB);
-
-    function successCB(data) {
-      var obj = JSON.parse(data);
-      var movie = new Oscar(obj.results[0]);
-      movie.show();
-
-      // $(".output").html(
-      //   "<img src='" +
-      //     theMovieDb.common.images_uri +
-      //     "w500/" +
-      //     obj.results[0].poster_path +
-      //     "' >"
-      // );
-    }
-    function errorCB(data) {
-      console.log("Error callback: " + data);
-    }
-  } else {
-    $.ajax({
-      url:
-        "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" +
-        speech +
-        "&utf8=&format=json",
-      type: "GET",
-      crossDomain: true,
-      dataType: "jsonp",
-      headers: {
-        Accept: "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "content-type": "application/json"
-      },
-      success: function(data) {
-        $(".output").html(data.query.search[0].snippet + ",,,");
-        console.log(inputTxt.textContent);
-
-        speak();
-
-        inputTxt.blur();
-      }
-    });
+  var serachOption = speech.match(/define|YouTube|movie/g);
+  speech = speech.replace(serachOption, "");
+  console.log(serachOption[0]);
+  switch (serachOption[0]) {
+    case "YouTube":
+      youtb(speech);
+      break;
+    case "define":
+      wk(speech);
+      break;
+    case "movie":
+      mv(speech);
+      break;
+    default:
+      wk(speech);
+      // userInfo();
+      break;
   }
 };
+
 recognition.onaudiostart = function() {
   diagnostic.textContent = "Ready to receive audio";
   console.log("Audio capturing started");
@@ -282,38 +267,4 @@ function findWord(word, str) {
   return str.split(" ").some(function(w) {
     return w === word;
   });
-}
-
-class Oscar {
-  constructor(data) {
-    console.log(data);
-    this.poster = data.poster_path;
-    this.snipp = data.overview;
-    this.rating = data.vote_average;
-    this.poularity = data.popularity;
-    this.first_air_date = data.first_air_date;
-  }
-  show() {
-    var p = document.createElement("p");
-    p.innerHTML = this.snipp;
-    var img = document.createElement("img");
-    img.src = theMovieDb.common.images_uri + "w200/" + this.poster;
-
-    var container = document.createElement("div");
-    container.id = "wrapper";
-
-    $("#oscar").append(container);
-    $("#wrapper").append(p);
-    $("#wrapper").append(img);
-
-    // var html = '<div><ul>';
-
-    // for(var i=1; i<=40; i++){
-    //     html+= "<li>Testing: "+i+"</li>";
-    // }
-
-    // html+= '</ul></div>';
-
-    // $('#wrapper').append(html);
-  }
 }
