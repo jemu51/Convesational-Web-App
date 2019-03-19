@@ -5,20 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="blue-mic.jpg" type="image/jpg">
-
-    <!-- Latest compiled and minified CSS -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     />
-
-    <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <!-- Popper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css" />
     <!--[if lt IE 9]>
@@ -27,9 +19,10 @@
     <title> Voice Driven WebApp </title>
   </head>
 
-  <body>
+  <body class="text-center">
     <button id="start" class="btn btn-info">Click to Start Speaking</button>
     <h1>Say a Word & Get Definition</h1>
+    <h6>Expicitly say 'youtube' or  'movie' or 'define' to get results from YouTube , The Movie Database, Wikipidea respectively</h6>
       <span id="pv-unsupported" hidden>Visibility API not supported</span>
       <p class="input text-center"></p>
     <div class="row select " id="oscar">
@@ -83,27 +76,68 @@
           </div>
         </div>
       </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="Welcome" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Online</h4>
+          </div>
+          <div class="modal-body">
+            <p>You are <strong>Online !</strong> Welcome to <strong>Willy</strong>.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div> 
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+            <h4 class="modal-title">Offline!!!</h4>
+          </div>
+          <div class="modal-body">
+            <p>Check your <strong>Internet Connection !</strong> Get back to online to <strong>continue</strong>.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div> 
     </div>
     <script src="tmdb.js"></script>
     <script src="script.js"></script>
+    <script src="output.js"></script>
   </body>
 </html>
-<!-- <script>
-// theMovieDb.find.getById({"id": "tt0993846", "external_source":"imdb_id"}, successCB, errorCB)
-theMovieDb.search.getMulti({"query":"Game%20Of%20Thrones"}, successCB, errorCB)
+<script>
+  addEventListener('online', function(e) {
+    $("#myModal").modal("hide");
+    $("#Welcome").modal("show");
+    console.log('online'); 
+    });
+  addEventListener('offline', function(e) {
+          $("#myModal").modal("show");
+      $("#myModal").on('hidden.bs.modal', function(){
+        if (!navigator.onLine) {
+          $("#myModal").modal("show");
+        }
+      });
+      console.log('offline'); 
+    });
 
-function successCB(data) {
-  var obj = JSON.parse(data);
-  console.log("Success callback: " + data);
-
-  console.log("Success callback: " + obj.results[0].original_name);
-
-  $(".output").html( "<img src='"+theMovieDb.common.images_uri +"w500/" +obj.results[0].poster_path+"' >");
-  
-};
-        
-function errorCB(data) {
-        	console.log("Error callback: " + data);
-    };
-
-</script> -->
+  </script>
