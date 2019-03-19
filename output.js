@@ -21,6 +21,15 @@ class Oscar {
     this.first_air_date = data.first_air_date;
   }
   show() {
+    $(".output").html("From The Movie Database");
+    var pi = document.createElement("p");
+    pi.innerHTML =
+      "Rating= " +
+      this.rating +
+      " | Popularity= " +
+      this.poularity +
+      " | Air-date=" +
+      this.first_air_date;
     var p = document.createElement("p");
     p.innerHTML = this.snipp;
     var img = document.createElement("img");
@@ -28,20 +37,12 @@ class Oscar {
 
     var container = document.createElement("div");
     container.id = "wrapper";
+    container.className = "text-center";
 
     $("#oscar").append(container);
+    $("#wrapper").append(pi);
     $("#wrapper").append(p);
     $("#wrapper").append(img);
-
-    // var html = '<div><ul>';
-
-    // for(var i=1; i<=40; i++){
-    //     html+= "<li>Testing: "+i+"</li>";
-    // }
-
-    // html+= '</ul></div>';
-
-    // $('#wrapper').append(html);
   }
 }
 
