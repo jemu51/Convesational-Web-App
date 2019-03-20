@@ -73,7 +73,7 @@ function wk(speech) {
     },
     success: function(data) {
       $(".output").html(data.query.search[0].snippet + ",,,");
-      // console.log(inputTxt.textContent);
+      console.log(data.query.search);
 
       speak();
 
