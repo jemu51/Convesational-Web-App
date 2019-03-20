@@ -80,7 +80,7 @@ console.log(
     "  "
 );
 switch (true) {
-  case browserName == "Chrome" && majorVersion > 30:
+  case browserName == "Chrome" && majorVersion > 33:
     $(".output").html("Browser is ok for this WebApp.");
     break;
   case browserName == "Chrome for Android":
