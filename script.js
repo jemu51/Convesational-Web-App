@@ -109,27 +109,34 @@ recognition.onresult = function(event) {
   diagnostic.textContent = "Received Audio Input : '" + speech + "'.";
   bg.style.backgroundColor = speech;
   console.log("Confidence: " + event.results[0][0].confidence);
-  var serachOption = speech.match(/define|YouTube|movie/g);
+  var serachOption = speech.match(/define|YouTube|movie|Priya|search/g);
   speech = speech.replace(serachOption, "");
   if (serachOption) {
-    console.log(serachOption[0]);
+    // console.log(serachOption[0]);
     switch (serachOption[0]) {
       case "YouTube":
         youtb(speech);
         break;
-      case "define":
-        wk(speech);
-        break;
+      // case "define":
+      //   wk(speech);
+      //   break;
       case "movie":
         mv(speech);
         break;
-      default:
+      case "Priya":
+        userInfo(speech);
+        break;
+      case "search":
         wk(speech);
-        // userInfo();
+        break;
+      default:
+        // wk(speech);
+        userInfo(speech);
         break;
     }
   } else {
-    wk(speech);
+    // wk(speech);
+    userInfo(speech);
   }
 };
 
