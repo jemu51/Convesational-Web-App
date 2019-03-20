@@ -117,9 +117,9 @@ recognition.onresult = function(event) {
       case "YouTube":
         youtb(speech);
         break;
-      // case "define":
-      //   wk(speech);
-      //   break;
+      case "define":
+        wk(speech);
+        break;
       case "movie":
         mv(speech);
         break;
@@ -130,13 +130,13 @@ recognition.onresult = function(event) {
         wk(speech);
         break;
       default:
-        // wk(speech);
-        userInfo(speech);
+        wk(speech);
+        // userInfo(speech);
         break;
     }
   } else {
-    // wk(speech);
-    userInfo(speech);
+    wk(speech);
+    // userInfo(speech);
   }
 };
 
