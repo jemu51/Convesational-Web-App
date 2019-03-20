@@ -78,6 +78,27 @@
       </form>
 
     <!-- Modal -->
+    <div class="modal fade" id="browser" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Incompatible!!</h4>
+          </div>
+          <div class="modal-body">
+            <p>Your browser is <strong>Incompatible !</strong> for <strong>Convesational-Web-App</strong>.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div> 
+
+
+    <!-- Modal -->
     <div class="modal fade" id="Welcome" role="dialog">
       <div class="modal-dialog">
       
@@ -119,9 +140,7 @@
       </div>
     </div> 
     </div>
-    <script src="tmdb.js"></script>
-    <script src="script.js"></script>
-    <script src="output.js"></script>
+
   </body>
 </html>
 <script>
@@ -131,7 +150,7 @@
     console.log('online'); 
     });
   addEventListener('offline', function(e) {
-          $("#myModal").modal("show");
+      $("#myModal").modal("show");
       $("#myModal").on('hidden.bs.modal', function(){
         if (!navigator.onLine) {
           $("#myModal").modal("show");
@@ -139,5 +158,10 @@
       });
       console.log('offline'); 
     });
+console.log(navigator.userAgent);
 
   </script>
+      <script src="tmdb.js"></script>
+      <script src="script.js"></script>
+      <script src="output.js"></script>
+      <script src="browser.js"></script>
